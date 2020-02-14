@@ -49,7 +49,7 @@ steps:
       push:
         title: "Pushing image to cfcr"
         type: "push"
-        image_name: "animeshon/comingsoon"
+        image_name: "comingsoon"
         registry: "cfcr"
         candidate: "${{build}}"
         tags:
