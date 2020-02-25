@@ -59,7 +59,7 @@ steps:
         title: "Pushing image to Google Cloud Registry"
         type: "push"
         image_name: "comingsoon"
-        registry: "gcd-tier-0"
+        registry: "gcr-tier-0"
         candidate: "${{build}}"
         tags:
           - "${{CF_BRANCH_TAG_NORMALIZED}}"
