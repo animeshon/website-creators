@@ -46,11 +46,20 @@ steps:
             set:
               - ${{build.imageId}}:
                   - CF_QUALITY: false
-      push:
-        title: "Pushing image to cfcr"
+      push_cfcr:
+        title: "Pushing image to Codefresh Container Registry"
         type: "push"
         image_name: "comingsoon"
         registry: "cfcr"
+        candidate: "${{build}}"
+        tags:
+          - "${{CF_BRANCH_TAG_NORMALIZED}}"
+          - "${{CF_REVISION}}"
+      push_gcr:
+        title: "Pushing image to Google Cloud Registry"
+        type: "push"
+        image_name: "comingsoon"
+        registry: "gcd-tier-0"
         candidate: "${{build}}"
         tags:
           - "${{CF_BRANCH_TAG_NORMALIZED}}"
