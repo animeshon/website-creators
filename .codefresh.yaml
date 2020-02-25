@@ -1,0 +1,101 @@
+version: "1.0"
+stages:
+  - "clone"
+  - "build"
+  - "integration"
+  - "push"
+  - "deployment"
+steps:
+  clone:
+    type: "git-clone"
+    description: "Cloning main repository..."
+    repo: "animeshon/comingsoon"
+    revision: "${{CF_BRANCH}}"
+    stage: "clone"
+  build:
+    title: "Building Docker Image"
+    type: "build"
+    image_name: "animeshon/comingsoon"
+    tag: "${{CF_BRANCH_TAG_NORMALIZED}}"
+    dockerfile: "Dockerfile"
+    working_directory: "${{clone}}"
+    stage: "build"
+  parallel_push:
+    type: "parallel"
+    stage: "push"
+    steps:
+      annotate_build:
+        title: "Annotating Build"
+        image: "${{build}}"
+        working_directory: "IMAGE_WORK_DIR"
+        commands:
+          - "echo Annotating Build..."
+        on_success:
+          metadata:
+            set:
+              - ${{build.imageId}}:
+                  - CF_QUALITY: true
+        on_error:
+          metadata:
+            set:
+              - ${{build.imageId}}:
+                  - CF_QUALITY: false
+      push_cfcr:
+        title: "Pushing image to Codefresh Container Registry"
+        type: "push"
+        image_name: "comingsoon"
+        registry: "cfcr"
+        candidate: "${{build}}"
+        tags:
+          - "${{CF_BRANCH_TAG_NORMALIZED}}"
+          - "${{CF_REVISION}}"
+      push_gcr:
+        title: "Pushing image to Google Cloud Registry"
+        type: "push"
+        image_name: "comingsoon"
+        registry: "gcr-tier-0"
+        candidate: "${{build}}"
+        tags:
+          - "${{CF_BRANCH_TAG_NORMALIZED}}"
+          - "${{CF_REVISION}}"
+          - "latest"
+  prepare_plan:
+    image: "alpine:3.9"
+    title: "Setting up Terraform CLI"
+    stage: "deployment"
+    working_directory: "${{clone}}"
+    environment:
+      - "IMAGE_TAG=${{CF_REVISION}}"
+    commands:
+      - "./terraform/setup.sh"
+      - "./terraform/variables.sh"
+  plan:
+    image: "hashicorp/terraform:0.12.21"
+    title: "Generating Terraform plan"
+    stage: "deployment"
+    working_directory: "${{clone}}/terraform"
+    commands:
+      - "terraform init"
+      - "terraform plan"
+  approval_for_deploy:
+    stage: "deployment"
+    type: "pending-approval"
+    title: "Waiting for deployment approval"
+  prepare_deploy:
+    image: "alpine:3.9"
+    title: "Setting up Terraform CLI"
+    stage: "deployment"
+    working_directory: "${{clone}}"
+    environment:
+      - "IMAGE_TAG=${{CF_REVISION}}"
+    commands:
+      - "./terraform/setup.sh"
+      - "./terraform/variables.sh"
+  deploy:
+    image: "hashicorp/terraform:0.12.21"
+    title: "Executing Terraform plan"
+    stage: "deployment"
+    working_directory: "${{clone}}/terraform"
+    commands:
+      - "terraform init"
+      - "terraform apply -auto-approve" 
