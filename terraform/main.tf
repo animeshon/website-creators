@@ -20,7 +20,7 @@ resource "google_cloud_run_service" "comingsoon" {
       service_account_name  = data.terraform_remote_state.root.outputs.compute_default_service_account_email
 
       containers {
-        image = "gcr.io/gcp-animeshon/comingsoon@sha256:118ef31eae6d5a2f4256f798d18b15392e54934ce3a534429a191ff3c6ef9192"
+        image = format("gcr.io/gcp-animeshon/comingsoon:%s", var.image_tag)
 
         env {
           name  = "HOST"
