@@ -73,7 +73,7 @@ steps:
     working_directory: "${{clone}}/terraform"
     commands:
       - "terraform init"
-      - "terraform plan"
+      - "terraform plan -out=/codefresh/volume/terraform-plan"
   approval_for_deploy:
     stage: "deploy"
     type: "pending-approval"
@@ -85,4 +85,4 @@ steps:
     working_directory: "${{clone}}/terraform"
     commands:
       - "terraform init"
-      - "terraform apply -auto-approve" 
+      - "terraform apply -auto-approve /codefresh/volume/terraform-plan" 
