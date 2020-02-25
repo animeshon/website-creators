@@ -7,7 +7,7 @@ stages:
   - "plan"
   - "deploy"
 steps:
-  clone:
+  main_clone:
     type: "git-clone"
     description: "Cloning main repository..."
     repo: "animeshon/comingsoon"
@@ -17,7 +17,6 @@ steps:
     title: "Building Docker Image"
     type: "build"
     image_name: "animeshon/comingsoon"
-    working_directory: "${{clone}}"
     tag: "${{CF_BRANCH_TAG_NORMALIZED}}"
     dockerfile: "Dockerfile"
     stage: "build"
