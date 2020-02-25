@@ -4,6 +4,7 @@ stages:
   - "build"
   - "integration"
   - "push"
+  - "planning"
   - "deployment"
 steps:
   clone:
@@ -62,7 +63,7 @@ steps:
   prepare:
     image: "alpine:3.9"
     title: "Setting up Terraform CLI"
-    stage: "deployment"
+    stage: "planning"
     working_directory: "${{clone}}"
     environment:
       - "IMAGE_TAG=${{CF_REVISION}}"
@@ -72,7 +73,7 @@ steps:
   plan:
     image: "hashicorp/terraform:0.12.21"
     title: "Generating Terraform plan"
-    stage: "deployment"
+    stage: "planning"
     working_directory: "${{clone}}/terraform"
     commands:
       - "terraform init"
@@ -81,6 +82,16 @@ steps:
     stage: "deployment"
     type: "pending-approval"
     title: "Waiting for deployment approval"
+  prepare:
+    image: "alpine:3.9"
+    title: "Setting up Terraform CLI"
+    stage: "deployment"
+    working_directory: "${{clone}}"
+    environment:
+      - "IMAGE_TAG=${{CF_REVISION}}"
+    commands:
+      - "./terraform/setup.sh"
+      - "./terraform/variables.sh"
   deploy:
     image: "hashicorp/terraform:0.12.21"
     title: "Executing Terraform plan"
