@@ -3,7 +3,7 @@ provider "google" {
 }
 
 resource "google_cloud_run_service" "comingsoon" {
-  project  = google_project.root.project_id
+  project  = data.terraform_remote_state.root.outputs.project_id
   location = "europe-west1"
   name     = "comingsoon-animeshon-com"
 
@@ -17,7 +17,7 @@ resource "google_cloud_run_service" "comingsoon" {
 
     spec {
       container_concurrency = 80
-      service_account_name  = data.google_compute_default_service_account.root.email
+      service_account_name  = data.terraform_remote_state.root.outputs.compute_default_service_account_email
 
       containers {
         image = "gcr.io/gcp-animeshon/comingsoon@sha256:118ef31eae6d5a2f4256f798d18b15392e54934ce3a534429a191ff3c6ef9192"
@@ -50,7 +50,7 @@ resource "google_cloud_run_domain_mapping" "comingsoon" {
   name     = "comingsoon.animeshon.com"
 
   metadata {
-    namespace = google_project.root.project_id
+    namespace = data.terraform_remote_state.root.outputs.project_id
   }
 
   spec {
