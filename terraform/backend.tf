@@ -4,7 +4,7 @@ terraform {
     organization = "animeshon"
 
     workspaces {
-      name = "comingsoon-"
+      prefix = "comingsoon-"
     }
   }
 }
