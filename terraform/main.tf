@@ -2,6 +2,15 @@ provider "google" {
   version = "~> 3.6"
 }
 
+# NOTE: A new id is generated each time we switch to a new image tag.
+resource "random_id" "comingsoon" {
+  keepers = {
+    image_tag = var.image_tag
+  }
+
+  byte_length = 8
+}
+
 resource "google_cloud_run_service" "comingsoon" {
   project  = data.terraform_remote_state.root.outputs.project_id
   location = "europe-west1"
@@ -13,6 +22,7 @@ resource "google_cloud_run_service" "comingsoon" {
         "autoscaling.knative.dev/maxScale" = "5"
         "run.googleapis.com/client-name"   = "cloud-console"
       }
+      name = format("comingsoon-animeshon-com-%s", random_id.comingsoon.hex) 
     }
 
     spec {
