@@ -19,7 +19,7 @@ steps:
     image_name: "animeshon/comingsoon"
     tag: "${{CF_BRANCH_TAG_NORMALIZED}}"
     dockerfile: "Dockerfile"
-    working_directory: "{{clone}}"
+    working_directory: "${{clone}}"
     stage: "build"
   parallel_push:
     type: "parallel"
@@ -63,14 +63,14 @@ steps:
     image: "alpine:3.9"
     title: "Setting up Terraform CLI"
     stage: "plan"
-    working_directory: "{{clone}}"
+    working_directory: "${{clone}}"
     commands:
       - "./terraform/setup.sh"
   plan:
     image: "hashicorp/terraform:0.12.21"
     title: "Generating Terraform plan"
     stage: "plan"
-    working_directory: "{{clone}}/terraform"
+    working_directory: "${{clone}}/terraform"
     commands:
       - "terraform init"
       - "terraform plan"
@@ -82,7 +82,7 @@ steps:
     image: "hashicorp/terraform:0.12.21"
     title: "Executing Terraform plan"
     stage: "deploy"
-    working_directory: "{{clone}}/terraform"
+    working_directory: "${{clone}}/terraform"
     commands:
       - "terraform init"
       - "terraform apply -auto-approve" 
