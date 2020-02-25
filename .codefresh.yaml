@@ -4,6 +4,8 @@ stages:
   - "build"
   - "integration"
   - "push"
+  - "plan"
+  - "deploy"
 steps:
   clone:
     type: "git-clone"
@@ -57,31 +59,27 @@ steps:
         tags:
           - "${{CF_BRANCH_TAG_NORMALIZED}}"
           - "${{CF_REVISION}}"
+  prepare:
+    image: "alpine:3.9"
+    title: "Setting up Terraform CLI configuration file"
+    stage: "plan"
+    commands:
+      - "./terraform/setup.sh"
   plan:
-    stage: "push"
-    setup_terraform:
-      image: alpine:3.9
-      title: Setting up Terraform CLI configuration file
-      stage: prepare
-      commands:
-        - ./terraform/setup.sh
-    terraform_plan:
-      image: hashicorp/terraform:0.12.21
-      title: Generation Terraform execution plan
-      stage: plan
-      commands:
-        - terraform init
-        - terraform plan
+    image: "hashicorp/terraform:0.12.21"
+    title: "Generation Terraform execution plan"
+    stage: "plan"
+    commands:
+      - "terraform init"
+      - "terraform plan"
   approval_for_deploy:
-    stage: "push"
+    stage: "deploy"
     type: "pending-approval"
     title: "Waiting for deployment approval"
   deploy:
-    stage: "push"
-    execute_terraform:
-      image: hashicorp/terraform:0.12.21
-      title: Executing Terraform plan
-      stage: deploy
-      commands:
-        - terraform init
-        - terraform apply -auto-approve 
+    image: "hashicorp/terraform:0.12.21"
+    title: "Executing Terraform plan"
+    stage: "deploy"
+    commands:
+      - "terraform init"
+      - "terraform apply -auto-approve" 
