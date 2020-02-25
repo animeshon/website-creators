@@ -60,16 +60,16 @@ steps:
           - "${{CF_REVISION}}"
   prepare:
     image: "alpine:3.9"
-    title: "Setting up Terraform CLI configuration file"
+    title: "Setting up Terraform CLI"
     stage: "plan"
     commands:
       - "./terraform/setup.sh"
   plan:
     image: "hashicorp/terraform:0.12.21"
-    title: "Generation Terraform execution plan"
+    title: "Generating Terraform plan"
     stage: "plan"
     commands:
-      - "terraform init"
+      - "terraform init ./terraform"
       - "terraform plan"
   approval_for_deploy:
     stage: "deploy"
@@ -80,5 +80,5 @@ steps:
     title: "Executing Terraform plan"
     stage: "deploy"
     commands:
-      - "terraform init"
+      - "terraform init ./terraform"
       - "terraform apply -auto-approve" 
