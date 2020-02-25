@@ -7,7 +7,7 @@ stages:
   - "plan"
   - "deploy"
 steps:
-  main_clone:
+  clone:
     type: "git-clone"
     description: "Cloning main repository..."
     repo: "animeshon/comingsoon"
@@ -19,6 +19,7 @@ steps:
     image_name: "animeshon/comingsoon"
     tag: "${{CF_BRANCH_TAG_NORMALIZED}}"
     dockerfile: "Dockerfile"
+    working_directory: "{{clone}}"
     stage: "build"
   parallel_push:
     type: "parallel"
@@ -62,14 +63,16 @@ steps:
     image: "alpine:3.9"
     title: "Setting up Terraform CLI"
     stage: "plan"
+    working_directory: "{{clone}}"
     commands:
       - "./terraform/setup.sh"
   plan:
     image: "hashicorp/terraform:0.12.21"
     title: "Generating Terraform plan"
     stage: "plan"
+    working_directory: "{{clone}}/terraform"
     commands:
-      - "terraform init ./terraform"
+      - "terraform init"
       - "terraform plan"
   approval_for_deploy:
     stage: "deploy"
@@ -79,6 +82,8 @@ steps:
     image: "hashicorp/terraform:0.12.21"
     title: "Executing Terraform plan"
     stage: "deploy"
+    stage: "plan"
+    working_directory: "{{clone}}/terraform"
     commands:
-      - "terraform init ./terraform"
+      - "terraform init"
       - "terraform apply -auto-approve" 
