@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-cat > ${AUTO_TFVARS_FILE} <<EOF
+cat > ./terraform/pipeline.auto.tfvars <<EOF
 image_tag = ${IMAGE_TAG}
 EOF
 

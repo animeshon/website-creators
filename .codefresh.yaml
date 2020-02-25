@@ -67,7 +67,6 @@ steps:
     working_directory: "${{clone}}"
     environment:
       - "IMAGE_TAG=${{CF_REVISION}}"
-      - "AUTO_TFVARS_FILE=${{clone}}/terraform/pipeline.auto.tfvars"
     commands:
       - "./terraform/setup.sh"
       - "./terraform/variables.sh"
