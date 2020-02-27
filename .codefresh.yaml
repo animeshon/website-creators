@@ -80,7 +80,7 @@ steps:
     when:
       condition:
         any:
-          isPullRequestNotMergedOnMaster: '"${{CF_PULL_REQUEST_TARGET}}" == "master" && "${{CF_PULL_REQUEST_MERGED}}" == "false"'
+          isPullRequestOnMaster: '"${{CF_PULL_REQUEST_TARGET}}" == "master"'
           isManuallyTriggered: '"${{CF_BUILD_TRIGGER}}" == "build"'
   approval_for_deploy:
     stage: "deployment"
@@ -101,5 +101,5 @@ steps:
     when:
       condition:
         any:
-          isPullRequestMergedOnMaster: '"${{CF_PULL_REQUEST_TARGET}}" == "master" && "${{CF_PULL_REQUEST_MERGED}}" == "true"'
           isManuallyTriggered: '"${{CF_BUILD_TRIGGER}}" == "build"'
+          isNotPullRequestOnMaster: '"${{CF_PULL_REQUEST_TARGET}}" != "master"'
