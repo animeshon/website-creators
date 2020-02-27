@@ -24,22 +24,6 @@ steps:
     type: "parallel"
     stage: "push"
     steps:
-      annotate_build:
-        title: "Annotating Build"
-        image: "${{build}}"
-        working_directory: "IMAGE_WORK_DIR"
-        commands:
-          - "echo Annotating Build..."
-        on_success:
-          metadata:
-            set:
-              - ${{build.imageId}}:
-                  - CF_QUALITY: true
-        on_error:
-          metadata:
-            set:
-              - ${{build.imageId}}:
-                  - CF_QUALITY: false
       push_cfcr:
         title: "Pushing image to Codefresh Container Registry"
         type: "push"
