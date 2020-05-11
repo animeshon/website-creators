@@ -9,7 +9,7 @@ terraform {
   }
 }
 
-data "terraform_remote_state" "root" {
+data "terraform_remote_state" "general" {
   backend = "remote"
 
   config = {
@@ -17,7 +17,7 @@ data "terraform_remote_state" "root" {
     organization = "animeshon"
 
     workspaces = {
-      name = "master"
+      name = "general-tier-0"
     }
   }
 }

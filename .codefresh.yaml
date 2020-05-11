@@ -27,7 +27,7 @@ steps:
     type: "push"
     stage: "build"
     image_name: "comingsoon"
-    registry: "gcr-tier-0"
+    registry: "eu-general-tier-0"
     candidate: "${{build}}"
     tags:
       - "${{CF_BRANCH_TAG_NORMALIZED}}"
