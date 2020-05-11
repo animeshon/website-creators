@@ -65,7 +65,7 @@ steps:
         any:
           isManuallyTriggered: '"${{CF_BUILD_TRIGGER}}" == "build"'
   deploy:
-    image: "hashicorp/terraform:0.12.21"
+    image: "hashicorp/terraform:0.12.24"
     title: "Executing Terraform plan"
     stage: "deployment"
     working_directory: "${{clone}}/terraform"
