@@ -44,7 +44,7 @@ steps:
       - "./terraform/setup.sh"
       - "./terraform/variables.sh"
   plan:
-    image: "hashicorp/terraform:0.12.21"
+    image: "hashicorp/terraform:0.12.24"
     title: "Generating Terraform plan"
     stage: "deployment"
     working_directory: "${{clone}}/terraform"
