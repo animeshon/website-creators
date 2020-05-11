@@ -1,10 +1,12 @@
 version: "1.0"
+
 stages:
   - "clone"
   - "build"
-  - "integration"
-  - "push"
+  - "test"
+  - "provision"
   - "deployment"
+
 steps:
   clone:
     type: "git-clone"
@@ -20,11 +22,10 @@ steps:
     dockerfile: "Dockerfile"
     working_directory: "${{clone}}"
     stage: "build"
-    docker_push:
-    type: "parallel"
-    stage: "push"
+  docker_push:
     title: "Pushing image to Google Cloud Registry"
     type: "push"
+    stage: "build"
     image_name: "comingsoon"
     registry: "gcr-tier-0"
     candidate: "${{build}}"
