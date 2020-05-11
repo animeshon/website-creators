@@ -49,20 +49,20 @@ resource "google_cloud_run_service" "comingsoon" {
   }
 }
 
-# # Configure the domain name mapping for the instance to comingsoon.animeshon.com.
-# resource "google_cloud_run_domain_mapping" "comingsoon" {
-#   project  = google_cloud_run_service.comingsoon.project
-#   location = google_cloud_run_service.comingsoon.location
-#   name     = "comingsoon.animeshon.com"
+# Configure the domain name mapping for the instance to comingsoon.animeshon.com.
+resource "google_cloud_run_domain_mapping" "comingsoon" {
+  project  = google_cloud_run_service.comingsoon.project
+  location = google_cloud_run_service.comingsoon.location
+  name     = "comingsoon.animeshon.com"
 
-#   metadata {
-#     namespace = data.terraform_remote_state.root.outputs.project_id
-#   }
+  metadata {
+    namespace = local.project_id
+  }
 
-#   spec {
-#     route_name = google_cloud_run_service.comingsoon.name
-#   }
-# }
+  spec {
+    route_name = google_cloud_run_service.comingsoon.name
+  }
+}
 
 # Allow everyone to access this instance from comingsoon.animeshon.com.
 data "google_iam_policy" "noauth" {
