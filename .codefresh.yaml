@@ -20,29 +20,18 @@ steps:
     dockerfile: "Dockerfile"
     working_directory: "${{clone}}"
     stage: "build"
-  parallel_push:
+    docker_push:
     type: "parallel"
     stage: "push"
-    steps:
-      push_cfcr:
-        title: "Pushing image to Codefresh Container Registry"
-        type: "push"
-        image_name: "comingsoon"
-        registry: "cfcr"
-        candidate: "${{build}}"
-        tags:
-          - "${{CF_BRANCH_TAG_NORMALIZED}}"
-          - "${{CF_REVISION}}"
-      push_gcr:
-        title: "Pushing image to Google Cloud Registry"
-        type: "push"
-        image_name: "comingsoon"
-        registry: "gcr-tier-0"
-        candidate: "${{build}}"
-        tags:
-          - "${{CF_BRANCH_TAG_NORMALIZED}}"
-          - "${{CF_REVISION}}"
-          - "latest"
+    title: "Pushing image to Google Cloud Registry"
+    type: "push"
+    image_name: "comingsoon"
+    registry: "gcr-tier-0"
+    candidate: "${{build}}"
+    tags:
+      - "${{CF_BRANCH_TAG_NORMALIZED}}"
+      - "${{CF_REVISION}}"
+      - "latest"
   prepare_plan:
     image: "alpine:3.9"
     title: "Setting up Terraform CLI"
