@@ -13,7 +13,5 @@ resource "google_dns_record_set" "comingsoon" {
   type         = "CNAME"
   ttl          = 300
 
-  rrdatas = [
-    "ghs.googlehosted.com.",
-  ]
+  rrdatas = ["ghs.googlehosted.com."]
 }
