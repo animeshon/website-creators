@@ -4,7 +4,7 @@ terraform {
     organization = "animeshon"
 
     workspaces {
-      prefix = "comingsoon-"
+      prefix = "website-artists-"
     }
   }
 }

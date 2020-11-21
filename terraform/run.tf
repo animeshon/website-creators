@@ -1,5 +1,6 @@
+
 # NOTE: A new id is generated each time we switch to a new image tag.
-resource "random_id" "comingsoon" {
+resource "random_id" "artists" {
   keepers = {
     image_tag = var.image_tag
   }
@@ -7,10 +8,10 @@ resource "random_id" "comingsoon" {
   byte_length = 8
 }
 
-resource "google_cloud_run_service" "comingsoon" {
+resource "google_cloud_run_service" "artists" {
   project  = local.project_id
   location = "europe-west1"
-  name     = "comingsoon-animeshon-com"
+  name     = "artists-animeshon-com"
 
   template {
     metadata {
@@ -18,7 +19,7 @@ resource "google_cloud_run_service" "comingsoon" {
         "autoscaling.knative.dev/maxScale" = "5"
         "run.googleapis.com/client-name"   = "cloud-console"
       }
-      name = format("comingsoon-animeshon-com-%s", random_id.comingsoon.hex) 
+      name = format("artists-animeshon-com-%s", random_id.artists.hex) 
     }
 
     spec {
@@ -26,11 +27,11 @@ resource "google_cloud_run_service" "comingsoon" {
       service_account_name  = local.sa_compute_email
 
       containers {
-        image = format("eu.gcr.io/gcp-animeshon-general/comingsoon:%s", var.image_tag)
+        image = format("gcr.io/gcp-animeshon-general/artists-animeshon-com:%s", var.image_tag)
 
         env {
           name  = "HOST"
-          value = "comingsoon.animeshon.com"
+          value = "artists.animeshon.com"
         }
 
         resources {
@@ -49,22 +50,22 @@ resource "google_cloud_run_service" "comingsoon" {
   }
 }
 
-# Configure the domain name mapping for the instance to comingsoon.animeshon.com.
-resource "google_cloud_run_domain_mapping" "comingsoon" {
-  project  = google_cloud_run_service.comingsoon.project
-  location = google_cloud_run_service.comingsoon.location
-  name     = "comingsoon.animeshon.com"
+# Configure the domain name mapping for the instance to artists.animeshon.com.
+resource "google_cloud_run_domain_mapping" "artists" {
+  project  = google_cloud_run_service.artists.project
+  location = google_cloud_run_service.artists.location
+  name     = "artists.animeshon.com"
 
   metadata {
     namespace = local.project_id
   }
 
   spec {
-    route_name = google_cloud_run_service.comingsoon.name
+    route_name = google_cloud_run_service.artists.name
   }
 }
 
-# Allow everyone to access this instance from comingsoon.animeshon.com.
+# Allow everyone to access this instance from artists.animeshon.com.
 data "google_iam_policy" "noauth" {
   binding {
     role = "roles/run.invoker"
@@ -74,10 +75,10 @@ data "google_iam_policy" "noauth" {
   }
 }
 
-resource "google_cloud_run_service_iam_policy" "comingsoon" {
-  project  = google_cloud_run_service.comingsoon.project
-  location = google_cloud_run_service.comingsoon.location
-  service  = google_cloud_run_service.comingsoon.name
+resource "google_cloud_run_service_iam_policy" "artists" {
+  project  = google_cloud_run_service.artists.project
+  location = google_cloud_run_service.artists.location
+  service  = google_cloud_run_service.artists.name
 
   policy_data = data.google_iam_policy.noauth.policy_data
 }
