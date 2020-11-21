@@ -1,6 +1,6 @@
 
 # NOTE: A new id is generated each time we switch to a new image tag.
-resource "random_id" "artists" {
+resource "random_id" "creators" {
   keepers = {
     image_tag = var.image_tag
   }
@@ -8,10 +8,10 @@ resource "random_id" "artists" {
   byte_length = 8
 }
 
-resource "google_cloud_run_service" "artists" {
+resource "google_cloud_run_service" "creators" {
   project  = local.project_id
   location = "europe-west1"
-  name     = "artists-animeshon-com"
+  name     = "creators-animeshon-com"
 
   template {
     metadata {
@@ -19,7 +19,7 @@ resource "google_cloud_run_service" "artists" {
         "autoscaling.knative.dev/maxScale" = "5"
         "run.googleapis.com/client-name"   = "cloud-console"
       }
-      name = format("artists-animeshon-com-%s", random_id.artists.hex) 
+      name = format("creators-animeshon-com-%s", random_id.creators.hex) 
     }
 
     spec {
@@ -27,11 +27,11 @@ resource "google_cloud_run_service" "artists" {
       service_account_name  = local.sa_compute_email
 
       containers {
-        image = format("gcr.io/gcp-animeshon-general/artists-animeshon-com:%s", var.image_tag)
+        image = format("gcr.io/gcp-animeshon-general/creators-animeshon-com:%s", var.image_tag)
 
         env {
           name  = "HOST"
-          value = "artists.animeshon.com"
+          value = "creators.animeshon.com"
         }
 
         resources {
@@ -50,22 +50,22 @@ resource "google_cloud_run_service" "artists" {
   }
 }
 
-# Configure the domain name mapping for the instance to artists.animeshon.com.
-resource "google_cloud_run_domain_mapping" "artists" {
-  project  = google_cloud_run_service.artists.project
-  location = google_cloud_run_service.artists.location
-  name     = "artists.animeshon.com"
+# Configure the domain name mapping for the instance to creators.animeshon.com.
+resource "google_cloud_run_domain_mapping" "creators" {
+  project  = google_cloud_run_service.creators.project
+  location = google_cloud_run_service.creators.location
+  name     = "creators.animeshon.com"
 
   metadata {
     namespace = local.project_id
   }
 
   spec {
-    route_name = google_cloud_run_service.artists.name
+    route_name = google_cloud_run_service.creators.name
   }
 }
 
-# Allow everyone to access this instance from artists.animeshon.com.
+# Allow everyone to access this instance from creators.animeshon.com.
 data "google_iam_policy" "noauth" {
   binding {
     role = "roles/run.invoker"
@@ -75,10 +75,10 @@ data "google_iam_policy" "noauth" {
   }
 }
 
-resource "google_cloud_run_service_iam_policy" "artists" {
-  project  = google_cloud_run_service.artists.project
-  location = google_cloud_run_service.artists.location
-  service  = google_cloud_run_service.artists.name
+resource "google_cloud_run_service_iam_policy" "creators" {
+  project  = google_cloud_run_service.creators.project
+  location = google_cloud_run_service.creators.location
+  service  = google_cloud_run_service.creators.name
 
   policy_data = data.google_iam_policy.noauth.policy_data
 }

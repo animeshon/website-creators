@@ -4,11 +4,11 @@ locals {
   managed_zone_name       = data.terraform_remote_state.root.outputs.managed_zone_animeshon_com_name
 }
 
-# Setup artists subdomain managed by Google Cloud Run.
-resource "google_dns_record_set" "artists" {
+# Setup creators subdomain managed by Google Cloud Run.
+resource "google_dns_record_set" "creators" {
   project = local.managed_zone_project_id
 
-  name         = "artists.${local.managed_zone_dns_name}"
+  name         = "creators.${local.managed_zone_dns_name}"
   managed_zone = local.managed_zone_name
   type         = "CNAME"
   ttl          = 300

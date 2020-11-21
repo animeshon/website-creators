@@ -23,7 +23,7 @@ jobs:
         username: _json_key
         password: ${{ env.GCR_CREDENTIALS }}
         registry: gcr.io
-        repository: ${{ env.PROJECT_ID }}/artists-animeshon-com
+        repository: ${{ env.PROJECT_ID }}/creators-animeshon-com
         tags: latest,${{ github.sha }}
         tag_with_ref: true
         tag_with_sha: true
