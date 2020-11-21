@@ -75,7 +75,7 @@ data "google_iam_policy" "noauth" {
   }
 }
 
-resource "google_cloud_run_service_iam_policy" "artists" {
+resource "google_cloud_run_service_iam_policy" "comingsoon" {
   project  = google_cloud_run_service.artists.project
   location = google_cloud_run_service.artists.location
   service  = google_cloud_run_service.artists.name
