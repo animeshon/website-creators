@@ -5,7 +5,7 @@ locals {
 }
 
 # Setup artists subdomain managed by Google Cloud Run.
-resource "google_dns_record_set" "artists" {
+resource "google_dns_record_set" "comingsoon" {
   project = local.managed_zone_project_id
 
   name         = "artists.${local.managed_zone_dns_name}"
